@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>网站内容提取</title>
+  <link rel="stylesheet" href="popup.css">
+  <style>
+    body {
+      width: 300px;
+      max-height: 400px;
+      overflow: hidden;
+      background-color: #1E1E1E;
+    }
+    
+    .close-button {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      color: #808080;
+      cursor: pointer;
+      font-size: 18px;
+      z-index: 1001;
+      transition: color 0.2s ease;
+    }
+
+    .close-button:hover {
+      color: #FFFFFF;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Content</h1>
+    <div class="close-button">×</div>
+  </div>
+  <div id="content-container">
+    <!-- 这里将通过JavaScript动态生成内容 -->
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

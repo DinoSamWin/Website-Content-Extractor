@@ -1,0 +1,25 @@
+.add-button {
+  position: absolute;
+  background-color: #4A90E2;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(74, 144, 226, 0.25);
+  z-index: 1000;
+  font-size: 16px;
+  user-select: none;
+  transform: translateZ(0);
+  will-change: transform;
+  transition: all 0.2s ease;
+}
+
+.add-button:hover {
+  background-color: #357ABD;
+  transform: translateZ(0) scale(1.1);
+  box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3);
+}

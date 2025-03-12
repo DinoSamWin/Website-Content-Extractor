@@ -1,0 +1,143 @@
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 350px;
+  max-height: 500px;
+  overflow-y: auto;
+  /* 添加GPU加速，提高整体性能 */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.header {
+  background-color: #ff5722;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  /* 添加GPU加速，提高拖拽性能 */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+#content-container {
+  padding: 10px;
+}
+
+.website-folder {
+  margin-bottom: 10px;
+}
+
+.website-header {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.website-icon {
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+}
+
+.website-name {
+  flex-grow: 1;
+  font-weight: bold;
+}
+
+.toggle-icon {
+  margin-left: 10px;
+  /* 优化过渡效果，使用transform而非其他属性 */
+  transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+  will-change: transform;
+}
+
+.toggle-icon.open {
+  transform: rotate(90deg);
+}
+
+.website-content {
+  margin-left: 20px;
+  display: none;
+}
+
+.website-content.open {
+  display: block;
+}
+
+.content-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.checkbox {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.content-text {
+  flex-grow: 1;
+  color: #000;
+  /* 优化过渡效果，减少属性变化 */
+  transition: color 0.2s ease-out;
+}
+
+.content-text.checked {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.delete-btn {
+  color: #ff5722;
+  cursor: pointer;
+  opacity: 0.7;
+  /* 优化过渡效果，减少属性变化 */
+  transition: opacity 0.2s ease-out;
+  will-change: opacity;
+}
+
+.delete-btn:hover {
+  opacity: 1;
+}
+
+.add-button {
+  position: absolute;
+  background-color: #4A90E2;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(74, 144, 226, 0.25);
+  z-index: 1000;
+  transform: translateZ(0);
+  will-change: transform;
+  transition: all 0.2s ease;
+}
+
+.add-button:hover {
+  background-color: #357ABD;
+  transform: translateZ(0) scale(1.1);
+  box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3);
+}
+  /* 添加GPU加速，提高按钮动画性能 */
+  transform: translateZ(0);
+  will-change: transform;
+}
+font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}

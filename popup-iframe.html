@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>网站内容提取</title>
+  <link rel="stylesheet" href="popup.css">
+  <style>
+    body {
+      width: 300px;
+      max-height: 400px;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+      background-color: #18181B;
+      overflow: hidden;
+      transform: translateZ(0);
+      will-change: transform;
+    }
+    
+    .drag-handle {
+      cursor: move;
+      user-select: none;
+      transform: translateZ(0);
+      will-change: transform;
+      background-color: #27272A;
+    }
+    
+    .close-button {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      color: #808080;
+      cursor: pointer;
+      font-size: 18px;
+      z-index: 1001;
+      transition: color 0.2s ease;
+    }
+
+    .close-button:hover {
+      color: #FFFFFF;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      try {
+        const parentOrigin = window.location.ancestorOrigins ? 
+          window.location.ancestorOrigins[0] : '*';
+        window.parent.postMessage('iframeReady', parentOrigin);
+      } catch (error) {
+        console.error('发送iframe就绪消息时出错:', error);
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="header drag-handle">
+    <h1>Content</h1>
+    <div class="close-button">×</div>
+  </div>
+  <div id="content-container">
+    <!-- 这里将通过JavaScript动态生成内容 -->
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
