@@ -43,6 +43,16 @@ addButton.addEventListener('click', function() {
   });
 });
 
+// 监听来自扩展popup的消息
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  if (message.action === "openPopup") {
+    // 显示弹窗
+    createPopupIframe();
+    sendResponse({success: true});
+  }
+});
+
+
 // 监听文本选择事件
 document.addEventListener('mouseup', function(e) {
   const selection = window.getSelection();
@@ -86,14 +96,25 @@ let animationFrameId = null;
 
 // 创建弹窗
 function createPopupIframe() {
-  // 如果已经存在弹窗，则直接返回
+  // 如果已经存在弹窗，则显示它并发送更新内容的消息
   if (popupIframe) {
     popupIframe.style.display = 'block';
+    // 确保弹窗内容是最新的
+    if (popupIframe.contentWindow) {
+      try {
+        const iframeSrc = chrome.runtime.getURL('popup-iframe.html');
+        const iframeOrigin = new URL(iframeSrc).origin;
+        popupIframe.contentWindow.postMessage('updateContent', iframeOrigin);
+      } catch (err) {
+        console.error('发送更新内容消息时出错:', err);
+      }
+    }
     return;
   }
   
   // 创建iframe元素
   popupIframe = document.createElement('iframe');
+
   // 使用chrome.runtime.getURL确保URL是扩展内部资源
   const iframeSrc = chrome.runtime.getURL('popup-iframe.html');
   popupIframe.src = iframeSrc;
@@ -107,16 +128,11 @@ function createPopupIframe() {
     right: '20px',
     zIndex: '10000',
     border: 'none',
-    borderRadius: '5px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
-    // 增强GPU加速以提高性能
+    borderRadius: '12px',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
+    // 只保留必要的GPU加速属性
     transform: 'translateZ(0)',
-    willChange: 'transform',
-    backfaceVisibility: 'hidden',
-    perspective: '1000px',
-    // 添加更多GPU加速相关属性
-    transformStyle: 'preserve-3d',
-    filter: 'blur(0)' // 触发GPU加速的小技巧
+    willChange: 'transform'
   };
   
   // 一次性应用所有样式，减少重排次数
@@ -172,15 +188,18 @@ function handleIframeMessages(event) {
       } else if (event.data && event.data.type === 'dragStart') {
         // 接收来自iframe的拖拽开始消息
         isDragging = true;
+        
         // 保存鼠标在iframe内的相对位置
         dragOffsetX = event.data.offsetX || 0;
         dragOffsetY = event.data.offsetY || 0;
-        // 设置初始位置，避免第一帧的跳跃
-        lastX = event.data.initialX || lastX;
-        lastY = event.data.initialY || lastY;
+        
+        // 设置初始位置为当前鼠标位置
+        lastX = event.data.initialX || 0;
+        lastY = event.data.initialY || 0;
+        
         // 开始动画帧
         if (!animationFrameId) {
-          // 立即请求动画帧，不直接调用函数
+          // 立即请求动画帧
           animationFrameId = requestAnimationFrame(updatePopupPosition);
         }
       } else if (event.data && event.data.type === 'dragEnd') {
@@ -212,8 +231,11 @@ function handleMouseMove(e) {
     // 使用更高效的赋值方式
     lastX = e.clientX;
     lastY = e.clientY;
+    
     // 防止拖拽时选中文本
     e.preventDefault();
+    
+    // 不需要在这里请求动画帧，updatePopupPosition函数中已经处理
   }
 }
 
@@ -224,12 +246,13 @@ function updatePopupPosition() {
     const newLeft = lastX - dragOffsetX;
     const newTop = lastY - dragOffsetY;
     
-    // 使用transform代替直接修改left/top属性，启用GPU加速
-    // 使用translate3d强制GPU加速，提高性能
+    // 使用transform进行位置更新，减少重排
     popupIframe.style.transform = `translate3d(${newLeft}px, ${newTop}px, 0)`;
-    
-    // 只在拖拽开始时设置一次，避免每帧都修改样式属性
-    if (popupIframe.style.right !== 'auto') {
+    // 确保弹窗使用fixed定位，但只在第一次设置
+    if (popupIframe.style.position !== 'fixed') {
+      popupIframe.style.position = 'fixed';
+      popupIframe.style.top = '0';
+      popupIframe.style.left = '0';
       popupIframe.style.right = 'auto';
     }
   }

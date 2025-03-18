@@ -1,6 +1,6 @@
 .add-button {
   position: absolute;
-  background-color: #4A90E2;
+  background-color: #6366F1;
   color: white;
   border-radius: 50%;
   width: 24px;
@@ -9,7 +9,7 @@
   line-height: 24px;
   cursor: pointer;
   font-weight: bold;
-  box-shadow: 0 4px 8px rgba(74, 144, 226, 0.25);
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.25);
   z-index: 1000;
   font-size: 16px;
   user-select: none;
@@ -19,7 +19,7 @@
 }
 
 .add-button:hover {
-  background-color: #357ABD;
+  background-color: #4F46E5;
   transform: translateZ(0) scale(1.1);
-  box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3);
+  box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
 }

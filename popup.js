@@ -22,20 +22,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // 添加拖拽功能
     const dragHandle = document.querySelector('.drag-handle');
     if (dragHandle) {
-      let startX, startY;
-      
       // 鼠标按下时开始拖拽
       dragHandle.addEventListener('mousedown', function(e) {
-        startX = e.clientX;
-        startY = e.clientY;
-        
         try {
+          // 计算鼠标在拖拽区域内的相对位置
+          const rect = dragHandle.getBoundingClientRect();
+          const offsetX = e.clientX - rect.left;
+          const offsetY = e.clientY - rect.top;
+          
+          // 获取iframe在父窗口中的位置
           const parentOrigin = window.location.ancestorOrigins ? 
             window.location.ancestorOrigins[0] : '*';
+          
+          // 发送拖拽开始消息，包含更精确的位置信息
           window.parent.postMessage({
             type: 'dragStart',
-            offsetX: startX,
-            offsetY: startY
+            offsetX: offsetX,
+            offsetY: offsetY,
+            initialX: e.clientX,
+            initialY: e.clientY
           }, parentOrigin);
         } catch (error) {
           console.error('发送拖拽开始消息时出错:', error);
@@ -108,6 +113,14 @@ function toggleItemCheck(website, itemId) {
 // 从Chrome存储中加载保存的内容
 function loadSavedContent() {
   try {
+    // 保存当前所有网站文件夹的展开状态
+    const folderStates = {};
+    document.querySelectorAll('.website-folder').forEach(folder => {
+      const website = folder.dataset.website;
+      const isOpen = folder.querySelector('.website-content').classList.contains('open');
+      folderStates[website] = isOpen;
+    });
+    
     chrome.storage.local.get(['savedContent'], function(result) {
       if (chrome.runtime.lastError) {
         console.error('获取存储数据时出错:', chrome.runtime.lastError);
@@ -128,7 +141,7 @@ function loadSavedContent() {
         websites.forEach(website => {
           const websiteData = result.savedContent[website];
           if (websiteData.length > 0) {
-            createWebsiteFolder(website, websiteData);
+            createWebsiteFolder(website, websiteData, folderStates[website]);
           }
         });
       } else {
@@ -141,7 +154,7 @@ function loadSavedContent() {
 }
 
 // 创建网站文件夹
-async function createWebsiteFolder(website, websiteData) {
+async function createWebsiteFolder(website, websiteData, isOpen = true) {
   const contentContainer = document.getElementById('content-container');
   const websiteFolder = document.createElement('div');
   websiteFolder.className = 'website-folder';
@@ -196,7 +209,14 @@ async function createWebsiteFolder(website, websiteData) {
 
   // 创建网站内容区域
   const websiteContent = document.createElement('div');
-  websiteContent.className = 'website-content';
+  websiteContent.className = 'website-content' + (isOpen ? ' open' : '');
+  
+  // 切换图标状态与内容区域保持一致
+  if (isOpen) {
+    toggleIcon.classList.add('open');
+  } else {
+    toggleIcon.classList.remove('open');
+  }
 
   // 按时间倒序排列内容
   websiteData.sort((a, b) => b.timestamp - a.timestamp);
@@ -210,8 +230,17 @@ async function createWebsiteFolder(website, websiteData) {
     // 勾选框
     const checkbox = document.createElement('div');
     checkbox.className = 'checkbox';
-    checkbox.innerHTML = item.checked ? '✓' : '○';
-    checkbox.style.color = item.checked ? '#808080' : '#FFFFFF';
+    if (item.checked) {
+      checkbox.innerHTML = '✓';
+      checkbox.style.backgroundColor = '#6366F1';
+      checkbox.style.color = '#FFFFFF';
+      checkbox.style.border = '2px solid #6366F1';
+    } else {
+      checkbox.innerHTML = '○';
+      checkbox.style.backgroundColor = 'transparent';
+      checkbox.style.color = '#FFFFFF';
+      checkbox.style.border = '2px solid #6366F1';
+    }
     
     // 添加勾选事件
     checkbox.addEventListener('click', function(e) {
@@ -219,7 +248,15 @@ async function createWebsiteFolder(website, websiteData) {
       const checked = !item.checked;
       item.checked = checked;
       this.innerHTML = checked ? '✓' : '○';
-      this.style.color = checked ? '#999' : '#333';
+      if (checked) {
+        this.style.backgroundColor = '#6366F1';
+        this.style.color = '#FFFFFF';
+        this.style.border = '2px solid #6366F1';
+      } else {
+        this.style.backgroundColor = 'transparent';
+        this.style.color = '#FFFFFF';
+        this.style.border = '2px solid #6366F1';
+      }
       contentText.classList.toggle('checked', checked);
       
       // 更新存储
@@ -291,7 +328,7 @@ function deleteContent(website, id, contentItem) {
           // 从DOM中移除内容项
           contentItem.remove();
           
-          // 如果网站没有内容了，移除整个网站文件夹
+          // 如果网站没有内容了，立即移除整个网站文件夹
           const websiteContent = contentItem.parentElement;
           if (websiteContent && websiteContent.children.length === 0) {
             const websiteFolder = websiteContent.parentElement;
@@ -299,8 +336,6 @@ function deleteContent(website, id, contentItem) {
               websiteFolder.remove();
             }
           }
-          
-          // 不再调用loadSavedContent()，保持当前折叠状态
           
           // 如果没有内容了，显示提示信息
           if (Object.keys(savedContent).length === 0) {

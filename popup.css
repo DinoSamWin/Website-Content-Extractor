@@ -1,60 +1,90 @@
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   margin: 0;
   padding: 0;
   width: 350px;
   max-height: 500px;
   overflow-y: auto;
+  background-color: #18181B;
+  color: #FFFFFF;
   /* 添加GPU加速，提高整体性能 */
   transform: translateZ(0);
   will-change: transform;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .header {
-  background-color: #ff5722;
+  background-color: #27272A;
   color: white;
-  padding: 10px 15px;
+  padding: 14px 16px;
   text-align: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* 添加GPU加速，提高拖拽性能 */
   transform: translateZ(0);
   will-change: transform;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .header h1 {
   margin: 0;
-  font-size: 24px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 #content-container {
-  padding: 10px;
+  padding: 16px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .website-folder {
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #27272A;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .website-header {
   display: flex;
   align-items: center;
-  padding: 5px;
+  padding: 12px 14px;
   cursor: pointer;
-  background-color: #f5f5f5;
-  border-radius: 4px;
+  background-color: #27272A;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.website-header:hover {
+  background-color: #323238;
 }
 
 .website-icon {
-  margin-right: 10px;
-  width: 16px;
-  height: 16px;
+  margin-right: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  object-fit: contain;
 }
 
 .website-name {
   flex-grow: 1;
-  font-weight: bold;
+  font-weight: 500;
+  font-size: 14px;
+  color: #E4E4E7;
 }
 
 .toggle-icon {
   margin-left: 10px;
+  color: #A1A1AA;
+  font-size: 12px;
   /* 优化过渡效果，使用transform而非其他属性 */
   transition: transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
   will-change: transform;
@@ -62,11 +92,16 @@ body {
 
 .toggle-icon.open {
   transform: rotate(90deg);
+  color: #E4E4E7;
 }
 
 .website-content {
-  margin-left: 20px;
+  margin-left: 0;
+  padding: 0 14px 8px;
   display: none;
+  background-color: #27272A;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .website-content.open {
@@ -76,68 +111,148 @@ body {
 .content-item {
   display: flex;
   align-items: flex-start;
-  padding: 8px 5px;
-  border-bottom: 1px solid #eee;
+  padding: 10px 8px;
+  border-bottom: 1px solid #3F3F46;
+  transition: background-color 0.15s ease;
+  border-radius: 6px;
+}
+
+.content-item:hover {
+  background-color: #323238;
+}
+
+.content-item:last-child {
+  border-bottom: none;
 }
 
 .checkbox {
-  margin-right: 10px;
+  margin-right: 12px;
   cursor: pointer;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #6366F1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.checkbox:hover {
+  background-color: rgba(99, 102, 241, 0.1);
 }
 
 .content-text {
   flex-grow: 1;
-  color: #000;
+  color: #E4E4E7;
+  font-size: 14px;
+  line-height: 1.4;
   /* 优化过渡效果，减少属性变化 */
   transition: color 0.2s ease-out;
+  word-break: break-word;
+  padding-right: 8px;
 }
 
 .content-text.checked {
-  color: #999;
+  color: #71717A;
   text-decoration: line-through;
 }
 
 .delete-btn {
-  color: #ff5722;
+  color: #71717A;
   cursor: pointer;
   opacity: 0.7;
+  font-size: 16px;
   /* 优化过渡效果，减少属性变化 */
-  transition: opacity 0.2s ease-out;
+  transition: all 0.2s ease-out;
   will-change: opacity;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .delete-btn:hover {
   opacity: 1;
+  color: #EF4444;
+  background-color: rgba(239, 68, 68, 0.1);
 }
 
 .add-button {
   position: absolute;
-  background-color: #4A90E2;
+  background-color: #6366F1;
   color: white;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   text-align: center;
-  line-height: 24px;
+  line-height: 32px;
   cursor: pointer;
   font-weight: bold;
-  box-shadow: 0 4px 8px rgba(74, 144, 226, 0.25);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   z-index: 1000;
   transform: translateZ(0);
   will-change: transform;
   transition: all 0.2s ease;
+  font-size: 18px;
 }
 
 .add-button:hover {
-  background-color: #357ABD;
+  background-color: #4F46E5;
   transform: translateZ(0) scale(1.1);
-  box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
 }
-  /* 添加GPU加速，提高按钮动画性能 */
-  transform: translateZ(0);
-  will-change: transform;
+
+.close-button {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  color: #A1A1AA;
+  cursor: pointer;
+  font-size: 18px;
+  z-index: 1001;
+  transition: all 0.2s ease;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }
-font-weight: bold;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
+
+.close-button:hover {
+  color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 空状态样式 */
+.empty-state {
+  text-align: center;
+  padding: 30px 20px;
+  color: #71717A;
+  font-size: 14px;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #27272A;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4B4B52;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6366F1;
 }
