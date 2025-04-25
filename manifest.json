@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "网站内容提取",
+  "name": "SnipIt",
   "version": "1.0",
   "description": "提取并保存网页中选中的文本内容",
   "permissions": ["storage", "activeTab", "scripting"],

@@ -1,4 +1,4 @@
-# 网站内容提取 Chrome扩展
+# SnipIt Chrome扩展
 
 一个简洁高效的Chrome扩展，用于提取并保存网页中选中的文本内容。
 
