@@ -1,5 +1,9 @@
 # SnipIt Chrome扩展
 
+<p align="center">
+  <img src="./images/icon128.png" alt="SnipIt Logo" width="128" height="128">
+</p>
+
 一个简洁高效的Chrome扩展，用于提取并保存网页中选中的文本内容。
 
 ## 功能特点
